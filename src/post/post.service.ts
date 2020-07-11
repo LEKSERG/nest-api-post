@@ -11,13 +11,9 @@ export class postService {
   ) {}
 
   async read(id: string): Promise<any> {
-    const post = await this.postRepository.findOne({
-      where: { id },
-    });
+    const post = await this.postRepository.findOne({ where: { id } });
 
-    if (!post) {
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
-    }
+    if (!post) throw new HttpException('Not found', HttpStatus.NOT_FOUND);
 
     return post;
   }
@@ -33,9 +29,7 @@ export class postService {
   async update(id: string, data: Partial<any>): Promise<any> {
     let post = await this.postRepository.findOne({ where: { id } });
 
-    if (!post) {
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
-    }
+    if (!post) throw new HttpException('Not found', HttpStatus.NOT_FOUND);
 
     await this.postRepository.update({ id }, data);
 
@@ -45,12 +39,8 @@ export class postService {
   }
 
   async destroy(id: string): Promise<any> {
-    const post = await this.postRepository.findOne({
-      where: { id },
-    });
-    if (!post) {
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
-    }
+    const post = await this.postRepository.findOne({ where: { id } });
+    if (!post) throw new HttpException('Not found', HttpStatus.NOT_FOUND);
 
     await this.postRepository.remove(post);
     return post;

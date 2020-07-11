@@ -1,3 +1,4 @@
+import redis from 'redis';
 import {
   Controller,
   Body,
@@ -9,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { postService } from './post.service';
 
+const client = redis.createClient();
 @Controller('api/posts')
 export class postController {
   constructor(private postService: postService) {}
@@ -20,7 +22,13 @@ export class postController {
 
   @Get(':id')
   readpost(@Param('id') id: string) {
-    return this.postService.read(id);
+    const cached = client.get(id);
+    if (cached) {
+      return cached;
+    } else {
+      const post = this.postService.read(id);
+      client.set(id, post);
+    }
   }
 
   @Put(':id')
